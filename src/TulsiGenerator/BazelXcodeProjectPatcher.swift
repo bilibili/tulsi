@@ -57,21 +57,21 @@ final class BazelXcodeProjectPatcher {
     // trigger Xcode into an endless loop of
     //     "You don’t have permission to save the file “Contents.json” in the folder <X>."
     // This is present in Xcode 8.3.3 and Xcode 9b2.
-    guard !url.path.hasSuffix(".xcassets") else {
-      if let parent = file.parent as? PBXGroup {
-        parent.removeChild(file)
-      }
-      return
-    }
+//    guard !url.path.hasSuffix(".xcassets") else {
+//      if let parent = file.parent as? PBXGroup {
+//        parent.removeChild(file)
+//      }
+//      return
+//    }
 
     // Default to be relative to the bazel exec root if the FileReferencePatcher doesn't handle the
     // patch. This is for both source files as well as generated files (which always need to be
     // relative to the bazel exec root).
-    if !fileReferencePatcher.patchNonPresentFileReference(file: file,
-                                                          url: url,
-                                                          workspaceRootURL: workspaceRootURL) {
-      file.path = resolvePathFromBazelExecRoot(file.path!)
-    }
+//    if !fileReferencePatcher.patchNonPresentFileReference(file: file,
+//                                                          url: url,
+//                                                          workspaceRootURL: workspaceRootURL) {
+//      file.path = resolvePathFromBazelExecRoot(file.path!)
+//    }
   }
 
   // Handles patching PBXFileReferences that are not present on disk. This should be called before
