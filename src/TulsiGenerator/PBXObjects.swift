@@ -1336,7 +1336,7 @@ final class PBXProject: PBXObjectProtocol {
         accessedGroups.insert(variantGroup)
 
         let fileRef = variantGroup.getOrCreateFileReferenceBySourceTree(.Group,
-                                                                        path: path,
+                                                                        path: currentComponent,
                                                                         name: lprojName)
         if let ext = name.pbPathExtension, let uti = DirExtensionToUTI[ext] {
           fileRef.fileTypeOverride = uti
@@ -1346,8 +1346,8 @@ final class PBXProject: PBXObjectProtocol {
 
       // This will naively create a bundle grouping rather than including the per-locale strings.
       if let ext = currentComponent.pbPathExtension, let uti = DirExtensionToUTI[ext] {
-        let partialPath = components[0...i].joined(separator: "/")
-        let fileRef = group.getOrCreateFileReferenceBySourceTree(.Group, path: partialPath)
+//        let partialPath = components[0...i].joined(separator: "/")
+        let fileRef = group.getOrCreateFileReferenceBySourceTree(.Group, path: currentComponent)
         fileRef.fileTypeOverride = uti
 
         // Contents of bundles should never be referenced directly so this path
@@ -1357,11 +1357,11 @@ final class PBXProject: PBXObjectProtocol {
 
       // Create a subgroup for this simple path component.
       let groupName = currentComponent.isEmpty ? "/" : currentComponent
-      group = group.getOrCreateChildGroupByName(groupName, path: nil)
+      group = group.getOrCreateChildGroupByName(groupName, path: currentComponent)
       accessedGroups.insert(group)
     }
 
-    let fileRef = group.getOrCreateFileReferenceBySourceTree(.Group, path: path)
+    let fileRef = group.getOrCreateFileReferenceBySourceTree(.Group, path: components.last!)
     return (accessedGroups, fileRef)
   }
 }
