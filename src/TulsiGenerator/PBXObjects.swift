@@ -396,7 +396,7 @@ class PBXGroup: PBXReference, Hashable {
       children.append(child)
 
       // Update path for the child and its entire tree.
-      updatePathForChild(child, currentPath: nil)
+//      updatePathForChild(child, currentPath: nil)
 
       if let child = child as? XCVersionGroup {
         childVersionGroupsByName[child.name] = child
