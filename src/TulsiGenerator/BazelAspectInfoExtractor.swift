@@ -369,7 +369,8 @@ final class BazelAspectInfoExtractor: QueuedLogging {
 
       if let productTypeStr = productType {
         // Better be a type that we support, otherwise it's an error on our end.
-        if let actualProductType = PBXTarget.ProductType(rawValue: productTypeStr) {
+        let productTypeFixedStr = productTypeStr == "com.apple.product-type.app-extension.widgetkit" ? "com.apple.product-type.app-extension" : productTypeStr
+        if let actualProductType = PBXTarget.ProductType(rawValue: productTypeFixedStr) {
           targetProductType = actualProductType
         } else {
           throw ExtractorError.parsingFailed("Unsupported product type: \(productTypeStr)")
