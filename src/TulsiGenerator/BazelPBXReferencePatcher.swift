@@ -46,11 +46,25 @@ final class BazelPBXReferencePatcher {
 
     // The external directory may contain files such as a WORKSPACE file, but we only patch folders
     let childGroups = externalGroup.children.filter { $0 is PBXGroup } as! [PBXGroup]
-
+    let destinationPath = resolvePathFromBazelExecRoot(xcodeProject, "external")
+    
+    var isDirectory: ObjCBool = false
+    let fileExists = fileManager.fileExists(atPath: "external", isDirectory: &isDirectory)
+    
+    if !fileExists || !isDirectory.boolValue {
+      do {
+        try fileManager.createSymbolicLink(atPath: "external", withDestinationPath: destinationPath)
+      } catch {
+        print("failed to create '\(destinationPath)' symbolic link at external.")
+        return
+      }
+    }
+    
+    let relativePath = mainGroup.path != nil && mainGroup.path != "" ? "\(mainGroup.path!)/external" : "external"
     for child in childGroups {
-      let resolvedPath = resolvePathFromBazelExecRoot(xcodeProject, "external/\(child.name)")
+//      let resolvedPath = resolvePathFromBazelExecRoot(xcodeProject, "external/\(child.name)")
       let newChild = mainGroup.getOrCreateChildGroupByName("@\(child.name)",
-                                                           path: resolvedPath,
+                                                           path: "\(relativePath)/\(child.name)",
                                                            sourceTree: .SourceRoot)
       newChild.migrateChildrenOfGroup(child)
     }
