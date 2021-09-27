@@ -515,6 +515,11 @@ class BazelBuildBridge(object):
         os.environ['TARGET_BUILD_DIR'], os.environ['EXECUTABLE_PATH'])
 
     self.is_simulator = self.platform_name.endswith('simulator')
+
+    # 魔改 M1
+    if self.is_simulator:
+      self.arch = "x86_64"
+    
     # Check to see if code signing actions should be skipped or not.
     if self.is_simulator:
       self.codesigning_allowed = False
